@@ -6,6 +6,7 @@ require "hotkey.hotkey"
 -- require "ime.ime"
 -- require "reload.reload"
 -- require "volume.volume"
+require "search.search"
 require "window.window"
 
 
