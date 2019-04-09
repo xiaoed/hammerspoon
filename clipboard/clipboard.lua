@@ -1,23 +1,9 @@
---[[
-   From https://github.com/victorso/.hammerspoon/blob/master/tools/clipboard.lua
-   Modified by Diego Zamboni
-
-   This is my attempt to implement a jumpcut replacement in Lua/Hammerspoon.
-   It monitors the clipboard/pasteboard for changes, and stores the strings you copy to the transfer area.
-   You can access this history on the menu (Unicode scissors icon).
-   Clicking on any item will add it to your transfer area.
-   If you open the menu while pressing option/alt, you will enter the Direct Paste Mode. This means that the selected item will be
-   "typed" instead of copied to the active clipboard.
-   The clipboard persists across launches.
-   -> Ng irc suggestion: hs.settings.set("jumpCutReplacementHistory", clipboard_history)
-]]--
-
 -- Feel free to change those settings
 local frequency = 0.8 -- Speed in seconds to check for clipboard changes. If you check too frequently, you will loose performance, if you check sparsely you will loose copies
 local hist_size = 100 -- How many items to keep on history
 local label_length = 70 -- How wide (in characters) the dropdown menu should be. Copies larger than this will have their label truncated and end with "…" (unicode for elipsis ...)
 local honor_clearcontent = false --asmagill request. If any application clears the pasteboard, we also remove it from the history https://groups.google.com/d/msg/hammerspoon/skEeypZHOmM/Tg8QnEj_N68J
-local pasteOnSelect = false -- Auto-type on click
+local pasteOnSelect = true -- Auto-type on click
 
 -- Don't change anything bellow this line
 local jumpcut = hs.menubar.new()

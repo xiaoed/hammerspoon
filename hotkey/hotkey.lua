@@ -10,7 +10,7 @@ local launch_or_focus_window = function(name)
 	end
 end
 
-hs.hotkey.bind({"cmd"}, "L", hs.caffeinate.systemSleep)
+-- hs.hotkey.bind({"cmd"}, "L", hs.caffeinate.systemSleep)
 
 hs.fnutils.each({
     {key = "C", app = "Google Chrome"},
