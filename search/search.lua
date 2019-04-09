@@ -28,8 +28,6 @@ obj.search_path = {hs.configdir .. "/private/hsearch_dir", obj.spoonPath}
 obj.hotkeys = {}
 obj.source_kw = nil
 
-hs.hotkey.bind("alt", "G", function() obj:toggleShow() end)
-
 function obj:restoreOutput()
     obj.output_pool = {}
     -- Define the built-in output type
@@ -254,5 +252,7 @@ function obj:toggleShow()
         obj.chooser:show()
     end
 end
+
+hs.hotkey.bind("alt", "G", function() obj:toggleShow() end)
 
 return obj
