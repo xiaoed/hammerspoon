@@ -1,0 +1,13 @@
+*.class
+*.log
+*.log.*
+*.cache
+*.lock
+*.iml
+*.DS_Store
+**/.idea/
+**/tags
+**/branches
+**/target/
+**/.svn
+
