@@ -3,6 +3,7 @@ local launch_or_focus_window = function(name)
         local app = hs.appfinder.appFromName(name)
         if not app then
             hs.application.launchOrFocus(name)
+            return
         end
 
         if app:isHidden() then
