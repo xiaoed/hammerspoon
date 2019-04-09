@@ -19,6 +19,7 @@ hs.fnutils.each({
     {key = "I", app = "IntelliJ IDEA"},
     {key = "L", app = "Sublime Text"},
     {key = "Q", app = "WeChat Work"},
+    {key = "S", app = "Sequel Pro"},
     {key = "T", app = "iTerm2"},
     {key = "W", app = "WeChat"}
 }, function(meta)
