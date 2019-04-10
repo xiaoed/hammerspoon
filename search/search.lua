@@ -253,6 +253,7 @@ function obj:toggleShow()
     end
 end
 
+obj:init()
 hs.hotkey.bind("alt", "G", function() obj:toggleShow() end)
 
-return obj
+-- return obj

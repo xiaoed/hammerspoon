@@ -3,7 +3,7 @@ print('==================================================')
 -- require "autoscript.autoscript"
 require "clipboard.clipboard"
 require "hotkey.hotkey"
--- require "ime.ime"
+require "ime.ime"
 -- require "reload.reload"
 -- require "volume.volume"
 require "search.search"
