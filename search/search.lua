@@ -4,7 +4,7 @@
 ---
 --- Download: [https://github.com/Hammerspoon/Spoons/raw/master/Spoons/HSearch.spoon.zip](https://github.com/Hammerspoon/Spoons/raw/master/Spoons/HSearch.spoon.zip)
 
-local obj={}
+local obj = {}
 obj.__index = obj
 
 -- Metadata
@@ -24,7 +24,6 @@ obj.spoonPath = script_path()
 
 obj.sources = {}
 obj.sources_overview = {}
-obj.search_path = {hs.configdir .. "/private/hsearch_dir", obj.spoonPath}
 obj.hotkeys = {}
 obj.source_kw = nil
 
@@ -64,8 +63,8 @@ function obj:init()
     obj.chooser = hs.chooser.new(function(chosen)
         obj.trigger:disable()
         -- Disable all hotkeys
-        for _,val in pairs(obj.hotkeys) do
-            for i=1,#val do
+        for _, val in pairs(obj.hotkeys) do
+            for i = 1, #val do
                 val[i]:disable()
             end
         end
@@ -108,22 +107,22 @@ function obj:switchSource()
                 else
                     obj.source_kw = nil
                     local chooser_data = {
-                        {text="No source found!", subText="Maybe misspelled the keyword?"},
-                        {text="Want to add your own source?", subText="Feel free to read the code and open PRs. :)"}
+                        { text = "No source found!", subText = "Maybe misspelled the keyword?" },
+                        { text = "Want to add your own source?", subText = "Feel free to read the code and open PRs. :)" }
                     }
                     obj.chooser:choices(chooser_data)
                     obj.chooser:queryChangedCallback()
-                    hs.eventtap.keyStroke({"cmd"}, "a")
+                    hs.eventtap.keyStroke({ "cmd" }, "a")
                 end
             end
         else
             obj.source_kw = nil
             local chooser_data = {
-                {text="Invalid Keyword", subText="Trigger keyword must only consist of alphanumeric characters."}
+                { text = "Invalid Keyword", subText = "Trigger keyword must only consist of alphanumeric characters." }
             }
             obj.chooser:choices(chooser_data)
             obj.chooser:queryChangedCallback()
-            hs.eventtap.keyStroke({"cmd"}, "a")
+            hs.eventtap.keyStroke({ "cmd" }, "a")
         end
     else
         local row_content = obj.chooser:selectedRowContents()
@@ -143,74 +142,75 @@ function obj:switchSource()
         end
     end
     if obj.source_kw then
-        for key,val in pairs(obj.hotkeys) do
+        for key, val in pairs(obj.hotkeys) do
             if key == obj.source_kw then
-                for i=1,#val do
+                for i = 1, #val do
                     val[i]:enable()
                 end
             else
-                for i=1,#val do
+                for i = 1, #val do
                     val[i]:disable()
                 end
             end
         end
     else
-        for _,val in pairs(obj.hotkeys) do
-            for i=1,#val do
+        for _, val in pairs(obj.hotkeys) do
+            for i = 1, #val do
                 val[i]:disable()
             end
         end
     end
 end
 
---- HSearch:loadSources()
---- Method
---- Load new sources from `HSearch.search_path`, the search_path defaults to `~/.hammerspoon/private/hsearch_dir` and the HSearch Spoon directory. Only for debug purpose in usual.
----
-
 function obj:loadSources()
     obj.sources = {}
     obj.sources_overview = {}
     obj:restoreOutput()
-    for _,dir in ipairs(obj.search_path) do
-        local file_list = io.popen("find " .. dir .. " -type f -name '*.lua'")
-        for file in file_list:lines() do
-            -- Exclude self
-            if file ~= obj.spoonPath .. "/search.lua" then
-                local f = loadfile(file)
-                if f then
-                    local source = f()
-                    local output = source.new_output
-                    if output then obj.output_pool[output.name] = output.func end
-                    local overview = source.overview
-                    -- Gather souces overview from files
-                    table.insert(obj.sources_overview, overview)
-                    local hotkey = source.hotkeys
-                    if hotkey then obj.hotkeys[overview.keyword] = hotkey end
-                    local function sourceFunc()
-                        local notice = source.notice
-                        if notice then obj.chooser:choices({notice}) end
-                        local request = source.init_func
-                        if request then
-                            local chooser_data = request()
-                            if chooser_data then
-                                local desc = source.description
-                                if desc then table.insert(chooser_data, 1, desc) end
-                            end
-                            obj.chooser:choices(chooser_data)
-                        else
-                            obj.chooser:choices(nil)
-                        end
-                        if source.callback then
-                            obj.chooser:queryChangedCallback(source.callback)
-                        else
-                            obj.chooser:queryChangedCallback()
-                        end
-                        obj.chooser:searchSubText(true)
-                    end
-                    -- Add this source to sources pool, so it can found and triggered.
-                    obj.sources[overview.keyword] = sourceFunc
+    local file_list = io.popen("find " .. obj.spoonPath .. " -type f -name '*.lua'")
+    for file in file_list:lines() do
+        -- Exclude self
+        if file ~= obj.spoonPath .. "/search.lua" then
+            local f = loadfile(file)
+            if f then
+                local source = f()
+                local output = source.new_output
+                if output then
+                    obj.output_pool[output.name] = output.func
                 end
+                local overview = source.overview
+                -- Gather souces overview from files
+                table.insert(obj.sources_overview, overview)
+                local hotkey = source.hotkeys
+                if hotkey then
+                    obj.hotkeys[overview.keyword] = hotkey
+                end
+                local function sourceFunc()
+                    local notice = source.notice
+                    if notice then
+                        obj.chooser:choices({ notice })
+                    end
+                    local request = source.init_func
+                    if request then
+                        local chooser_data = request()
+                        if chooser_data then
+                            local desc = source.description
+                            if desc then
+                                table.insert(chooser_data, 1, desc)
+                            end
+                        end
+                        obj.chooser:choices(chooser_data)
+                    else
+                        obj.chooser:choices(nil)
+                    end
+                    if source.callback then
+                        obj.chooser:queryChangedCallback(source.callback)
+                    else
+                        obj.chooser:queryChangedCallback()
+                    end
+                    obj.chooser:searchSubText(true)
+                end
+                -- Add this source to sources pool, so it can found and triggered.
+                obj.sources[overview.keyword] = sourceFunc
             end
         end
     end
@@ -231,20 +231,22 @@ function obj:toggleShow()
     if obj.chooser:isVisible() then
         obj.chooser:hide()
         obj.trigger:disable()
-        for _,val in pairs(obj.hotkeys) do
-            for i=1,#val do
+        for _, val in pairs(obj.hotkeys) do
+            for i = 1, #val do
                 val[i]:disable()
             end
         end
     else
         if obj.trigger == nil then
-            obj.trigger = hs.hotkey.bind("", "tab", nil, function() obj:switchSource() end)
+            obj.trigger = hs.hotkey.bind("", "tab", nil, function()
+                obj:switchSource()
+            end)
         else
             obj.trigger:enable()
         end
-        for key,val in pairs(obj.hotkeys) do
+        for key, val in pairs(obj.hotkeys) do
             if key == obj.source_kw then
-                for i=1,#val do
+                for i = 1, #val do
                     val[i]:enable()
                 end
             end
@@ -254,6 +256,8 @@ function obj:toggleShow()
 end
 
 obj:init()
-hs.hotkey.bind("alt", "G", function() obj:toggleShow() end)
+hs.hotkey.bind("alt", "G", function()
+    obj:toggleShow()
+end)
 
 -- return obj
